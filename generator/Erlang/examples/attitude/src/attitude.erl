@@ -26,7 +26,7 @@ handle_cast(_Request, State) ->
 
 handle_info({serial, _Info, Data}, State) ->
   Serial_Buf = State#state.serial_buf,
-  {Msgs, Buf} = mavlink:decode(<<Serial_Buf/binary, Data/binary>>),
+  {Msgs, Buf} = mavlink:decode(State#state.mav_conn, <<Serial_Buf/binary, Data/binary>>),
   handle_mav(Msgs),
   {noreply, State#state{serial_buf = Buf}};
 

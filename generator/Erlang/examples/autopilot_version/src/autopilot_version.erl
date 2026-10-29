@@ -32,7 +32,8 @@ handle_info(tick, State) ->
 
 handle_info({udp, Socket, Address, Port, Data}, State) when Socket == State#state.udp_sock ->
   UDP_Buf = State#state.udp_buf,
-  {Msgs, Buf} = mavlink:decode(<<UDP_Buf/binary, Data/binary>>),
+  {Msgs, Buf} = mavlink:decode(State#state.mav_conn, <<UDP_Buf/binary, Data/binary>>),
+
   handle_mav(Msgs),
 
   {noreply, State#state{udp_addr=Address, udp_port=Port}};
@@ -64,7 +65,7 @@ handle_mav([Error | Other]) ->
 % % handle_mav_msg
 
 handle_mav_msg(1, Autopilot_Version = #autopilot_version{}) ->
-  io:format("Received autopilot_version: ~p\n", [Autopilot_Version]);
+  io:format("Received autopilot_version: ~p\n", [mavlink:to_proplist(Autopilot_Version)]);
 
 handle_mav_msg(_, _) ->
   unhandled.

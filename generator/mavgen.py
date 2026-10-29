@@ -293,10 +293,7 @@ def mavgen(opts, args):
             raise DeprecationWarning("Error! Mavgen_Ada does not supports protocol version")
     elif opts.language == 'erlang':
         from . import mavgen_erlang
-        if opts.wire_protocol == mavparse.PROTOCOL_1_0:
-            mavgen_erlang.generate(opts.output, xml)
-        else:
-            raise DeprecationWarning("Error! Mavgen_Erlang does not supports protocol version")
+        mavgen_erlang.generate(opts.output, xml)
     else:
         print("Unsupported language %s" % opts.language)
 
